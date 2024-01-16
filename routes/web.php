@@ -24,6 +24,7 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+Route::get('/create-post', [\App\Http\Controllers\PostController::class,'createPost'])->name('create.post');
 
 Route::middleware([
     'auth:sanctum',
@@ -36,5 +37,4 @@ Route::middleware([
 
 
 
-    Route::post('/create-post', [\App\Http\Controllers\PostController::class,'createPost'])->name('create.post');
 });
