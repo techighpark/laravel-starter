@@ -1,12 +1,9 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use App\Models\Post;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\ValidationException;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,46 +23,45 @@ Route::get('/test', function (Request $request) {
 //    \App\Models\User::factory()->count(12)->create();
 //    return $user;
 });
+//
+//Route::post('/sanctum/token', function (Request $request) {
+//
+//    $request->validate([
+//        'email' => 'required|email',
+//        'password' => 'required',
+//        'device_name' => 'required'
+//    ]);
+//
+//    $credentials = $request->only([
+//        'email',
+//        'password',
+//        'device_name',
+//    ]);
+//
+//    Log::debug(json_encode($credentials));
+//
+//    /** @var User $user */
+//    $user = User::query()->where('email', $credentials['email'])->first();
+//
+//    if (!$user || !Hash::check($credentials['password'], $user->getAttribute('password'))) {
+//        throw ValidationException::withMessages([
+//            'email' => ['The provided credentials are incorrect.'],
+//        ]);
+//    }
+//
+//    Log::debug('1' . $user->getAuthPassword());
+//    Log::debug('2' . $user->getAttribute('password'));
+//
+//
+//    return $user->createToken($credentials['device_name'])->plainTextToken;
+//});
 
-Route::post('/sanctum/token', function (Request $request) {
-    
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-        'device_name' => 'required'
-    ]);
-
-    $credentials = $request->only([
-        'email',
-        'password',
-        'device_name',
-    ]);
-
-    Log::debug(json_encode($credentials));
-
-    /** @var User $user */
-    $user = User::query()->where('email', $credentials['email'])->first();
-
-    if (!$user || !Hash::check($credentials['password'], $user->getAttribute('password'))) {
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
-        ]);
-    }
-
-    Log::debug('1' . $user->getAuthPassword());
-    Log::debug('2' . $user->getAttribute('password'));
-
-
-    return $user->createToken($credentials['device_name'])->plainTextToken;
-
-});
-
-Route::post('/tokens/create', function (Request $request) {
-
-    $token = $request->user()->createToken($request->token_name);
-
-    return ['token' => $token->plainTextToken];
-});
+//Route::post('/tokens/create', function (Request $request) {
+//
+//    $token = $request->user()->createToken($request->token_name);
+//
+//    return ['token' => $token->plainTextToken];
+//});
 
 Route::middleware('auth:sanctum')
     ->group(function () {
@@ -73,5 +69,15 @@ Route::middleware('auth:sanctum')
             return $request->user();
         });
 
+        Route::controller(PostController::class)->group(function () {
+            Route::post('/post/create', 'createPost');
+        });
+
+
+        Route::get('/test', function (Request $request) {
+            $posts = Post::query()->get();
+            return $posts;
+        })->middleware('role:abc');
+//
 //    Route::
     });
