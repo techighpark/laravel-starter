@@ -4,6 +4,7 @@ use App\Http\Controllers\PostController;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,53 +16,23 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::get('/test', function (Request $request) {
+Route::post('/register', function (Request $request) {
 
-    $posts = Post::query()->get();
-
-    return $posts;
+    return \App\Models\User::create([
+        'name' => 'test',
+        'email' => 'test@test.com',
+        'email_verified_at' => now(),
+        'password' => 'test1234', // password
+        'two_factor_secret' => null,
+        'two_factor_recovery_codes' => null,
+        'remember_token' => Str::random(10),
+        'profile_photo_path' => null,
+        'current_team_id' => null,
+    ]);
 //    \App\Models\User::factory()->count(12)->create();
 //    return $user;
 });
-//
-//Route::post('/sanctum/token', function (Request $request) {
-//
-//    $request->validate([
-//        'email' => 'required|email',
-//        'password' => 'required',
-//        'device_name' => 'required'
-//    ]);
-//
-//    $credentials = $request->only([
-//        'email',
-//        'password',
-//        'device_name',
-//    ]);
-//
-//    Log::debug(json_encode($credentials));
-//
-//    /** @var User $user */
-//    $user = User::query()->where('email', $credentials['email'])->first();
-//
-//    if (!$user || !Hash::check($credentials['password'], $user->getAttribute('password'))) {
-//        throw ValidationException::withMessages([
-//            'email' => ['The provided credentials are incorrect.'],
-//        ]);
-//    }
-//
-//    Log::debug('1' . $user->getAuthPassword());
-//    Log::debug('2' . $user->getAttribute('password'));
-//
-//
-//    return $user->createToken($credentials['device_name'])->plainTextToken;
-//});
 
-//Route::post('/tokens/create', function (Request $request) {
-//
-//    $token = $request->user()->createToken($request->token_name);
-//
-//    return ['token' => $token->plainTextToken];
-//});
 
 Route::middleware('auth:sanctum')
     ->group(function () {
