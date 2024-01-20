@@ -38,6 +38,7 @@ Route::middleware('auth:sanctum')
 
         Route::resource('posts', \App\Http\Controllers\PostApiController::class);
 
+
 //        Route::controller(PostController::class)
 //            ->prefix('/posts')
 //            ->group(function () {

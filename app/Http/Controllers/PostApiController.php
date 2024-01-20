@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\CustomException;
-use App\Traits\ProductHelper;
+use App\Traits\PostHelper;
 use Illuminate\Http\Request;
 
 class PostApiController extends Controller
 {
-    use ProductHelper;
+    use PostHelper;
 
     /**
      * Display a listing of the resource.
@@ -16,7 +16,12 @@ class PostApiController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $result = $user->posts()->get();
+        try {
+            $result = $this->indexPosts(user: $user);
+        } catch (CustomException $e) {
+//            return response($e->getCustomData(), 400);
+            return $e->getCustomData();
+        }
         return $result;
     }
 
@@ -33,11 +38,11 @@ class PostApiController extends Controller
      */
     public function store(Request $request)
     {
+        $user = $request->user();
         try {
-            $user = $request->user();
-            $result = $this->storeProduct(title: 'title', contents: 'contents', user: $user);
-        } catch (CustomException $exception) {
-            return $exception->getCustomData();
+            $result = $this->storePost(title: 'title', contents: 'contents', user: $user);
+        } catch (CustomException $e) {
+            return $e->getCustomData();
         }
         return $result;
     }
@@ -47,7 +52,13 @@ class PostApiController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $result = $this->showPost(id: $id);
+        } catch (CustomException $e) {
+            return $e->getCustomData();
+        }
+
+        return $result;
     }
 
     /**
