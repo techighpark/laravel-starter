@@ -1,10 +1,7 @@
 <?php
 
-use App\Http\Controllers\PostController;
-use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,21 +13,20 @@ use Illuminate\Support\Str;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::post('/register', function (Request $request) {
+Route::post('/user/create', function (Request $request) {
 
-    return \App\Models\User::create([
-        'name' => 'test',
-        'email' => 'test@test.com',
-        'email_verified_at' => now(),
-        'password' => 'test1234', // password
-        'two_factor_secret' => null,
-        'two_factor_recovery_codes' => null,
-        'remember_token' => Str::random(10),
-        'profile_photo_path' => null,
-        'current_team_id' => null,
-    ]);
-//    \App\Models\User::factory()->count(12)->create();
-//    return $user;
+    $user = new \App\Actions\Fortify\CreateNewUser();
+    try {
+        $newUser = $user->create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'password_confirmation' => $request->password_confirmation,
+        ]);
+    } catch (\Illuminate\Validation\ValidationException $exception) {
+        return $exception->getMessage();
+    }
+    return $newUser;
 });
 
 
@@ -40,15 +36,29 @@ Route::middleware('auth:sanctum')
             return $request->user();
         });
 
-        Route::controller(PostController::class)->group(function () {
-            Route::post('/post/create', 'createPost');
-        });
+        Route::resource('posts', \App\Http\Controllers\PostApiController::class);
+
+//        Route::controller(PostController::class)
+//            ->prefix('/posts')
+//            ->group(function () {
+//                Route::get('/', 'showPosts');
+//
+//                Route::get('/create', 'showCreatePost');
+//                Route::post('/', 'createPost');
+//
+//                Route::get('/{id}', 'showPost');
+//
+//                Route::get('/{id}/edit', 'showEditPost');
+//                Route::put('/{id}', 'editPost');
+//
+//                Route::delete('/{id}', 'deletePost');
+//            });
 
 
-        Route::get('/test', function (Request $request) {
-            $posts = Post::query()->get();
-            return $posts;
-        })->middleware('role:abc');
+//        Route::get('/test', function (Request $request) {
+//            $posts = Post::query()->get();
+//            return $posts;
+//        })->middleware('role:abc');
 //
 //    Route::
     });

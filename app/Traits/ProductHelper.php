@@ -2,28 +2,49 @@
 
 namespace App\Traits;
 
+use App\Exceptions\CustomException;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\RelationNotFoundException;
-use Illuminate\Support\Facades\Log;
 
 trait ProductHelper
 {
-    public function createProductHelper($title, $contents, $user): void
-    {
-        try {
 
+
+    public function indexProducts()
+    {
+
+    }
+
+    /**
+     * @throws CustomException
+     */
+    public function storeProduct($title, $contents, $user): array
+    {
+
+        try {
             /** @var User $user */
-            $user->posts()->create([
+            $post = $user->posts()->create([
                 'title' => $title,
                 'contents' => $contents
             ]);
         } catch (ModelNotFoundException) {
-            Log::debug('ModelNotFoundException');
+            throw new CustomException("데이터를 찾을 수 없습니다.", 400);
         } catch (RelationNotFoundException) {
-            Log::debug('RelationNotFoundException');
+            throw new CustomException("게시물을 찾을 수 없습니다.", 401);
         }
+
+        return ['postId' => $post->getAttribute('id')];
     }
 
+    public function editProduct()
+    {
+
+    }
+
+    public function updateProduct()
+    {
+
+    }
 
 }

@@ -10,10 +10,13 @@ class PostController extends Controller
 
     use ProductHelper;
 
-    function createPost(Request $request)
+    function store(Request $request)
     {
         $user = $request->user();
         $this->createProductHelper(title: 'title', contents: 'contents', user: $user);
         return $user->posts()->get();
     }
 }
+
+
+
