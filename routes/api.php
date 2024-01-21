@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CommentApiController;
+use App\Http\Controllers\PostApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,8 +38,10 @@ Route::middleware('auth:sanctum')
             return $request->user();
         });
 
-        Route::resource('posts', \App\Http\Controllers\PostApiController::class);
-        Route::resource('posts.comments', \App\Http\Controllers\CommentApiController ::class)
+        Route::resource('posts', PostApiController::class);
+        Route::post('/comments/{id}', [CommentApiController ::class, 'storeChild']);
+//        Route::get('/comments/{id}', [CommentApiController ::class, 'showChild']);
+        Route::resource('posts.comments', CommentApiController ::class)
             ->shallow();
 
 

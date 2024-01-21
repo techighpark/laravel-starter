@@ -21,4 +21,14 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function childComment(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Comment::class);
+    }
+
+    public function parentComment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Comment::class);
+    }
 }
