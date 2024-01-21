@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->text('comments');
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('post_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignIdFor('post')->constrained()->onDelete('cascade')->onUpdate('cascade');
+//            $table->foreignIdFor(\App\Models\Post::class)->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('comments');
     }
 };

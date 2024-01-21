@@ -37,6 +37,8 @@ Route::middleware('auth:sanctum')
         });
 
         Route::resource('posts', \App\Http\Controllers\PostApiController::class);
+        Route::resource('posts.comments', \App\Http\Controllers\CommentApiController ::class)
+            ->shallow();
 
 
 //        Route::controller(PostController::class)
