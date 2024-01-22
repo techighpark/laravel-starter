@@ -6,7 +6,6 @@ use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class CommentApiController extends Controller
 {
@@ -47,22 +46,14 @@ class CommentApiController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * [Q]
      */
-    public function storeChild(Request $request, string $id)
+    public function storeChild(Request $request, string $id): \Illuminate\Database\Eloquent\Model
     {
-        $validator = Validator::make(['comment_id' => $id], [
-            'comment_id' => 'unique:comments'
-        ], [
-            'comment_id' => 'unique!!!!'
-        ]);
-
-        if ($validator->fails()) {
-            return $validator->getMessageBag();
-        }
 
         /** @var Comment $comment */
         $comment = Comment::query()->findOrFail($id);
-        return $comment->childComment()->create([
+        return $comment->childComments()->create([
             'comments' => $request->comments,
             'user_id' => $request->user()->getKey(),
         ]);
@@ -74,9 +65,7 @@ class CommentApiController extends Controller
      */
     public function show(string $id): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
     {
-
-
-        return Comment::query()->with(['childComment', 'parentComment'])->find($id);
+        return Comment::query()->with(['childComments', 'parentComment'])->find($id);
     }
 
     /**

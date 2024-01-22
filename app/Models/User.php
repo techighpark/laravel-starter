@@ -74,4 +74,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function latestComment(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Comment::class)->latestOfMany();
+    }
 }

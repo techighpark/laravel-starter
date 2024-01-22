@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\CarApiController;
 use App\Http\Controllers\CommentApiController;
+use App\Http\Controllers\MechanicController;
+use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PostApiController;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,13 +37,25 @@ Route::post('/user/create', function (Request $request) {
 
 
 Route::middleware('auth:sanctum')
-    ->group(function () {
-        Route::get('/user', function (Request $request) {
+    ->group(callback: function () {
+        Route::get('user', function (Request $request) {
             return $request->user();
         });
 
-        Route::resource('posts', PostApiController::class);
-        Route::post('/comments/{id}', [CommentApiController ::class, 'storeChild']);
+        Route::get('user/comments/latest', function (Request $request) {
+            return $request->user()->latestComment()->first();
+        });
+        Route::get('user/comments', function (Request $request) {
+            return Comment::query()->whereBelongsTo($request->user())->get();
+        });
+
+        Route::resources([
+            'posts' => PostApiController::class,
+            'cars' => CarApiController::class,
+            'mechanics' => MechanicController::class,
+            'owners' => OwnerController::class,
+        ]);
+        Route::post('comments/{id}', [CommentApiController ::class, 'storeChild']);
 //        Route::get('/comments/{id}', [CommentApiController ::class, 'showChild']);
         Route::resource('posts.comments', CommentApiController ::class)
             ->shallow();
